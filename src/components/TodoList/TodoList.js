@@ -1,16 +1,8 @@
 import './TodoList.css'
 import {useState} from 'react'
 
-export default function TodoList(){
-  //const todoListTemp = ['Study lesson', 'Run 5k', 'Go to party', 'Another todo']
-  const todoListTemp = [
-    {id:1, name:'Study lesson', date:'Today', isCompleted:false, category: 'lesson'},
-    {id:2, name:'Run 5k', date:'Tomorrow', time:'4:00pm', isCompleted:false, category: 'calendar'},
-    {id:3, name:'Go to party', date:'Someday', time:'10:00pm', isCompleted:false, category: 'exercise'},
-    {id:4, name:'Game meetup', date:'Yesterday', time:'1:00pm', isCompleted:true, category: 'calendar'},
-    {id:5, name:'Take out trash', date:'Yesterday', isCompleted:true, category: 'lesson'}
-  ]
-  const [todoList, setTodoList] = useState(todoListTemp)
+export default function TodoList({todoListUser, updateTodoList, newTaskHandler, dateSelected, setRoute}){
+  //const [todoListUser, setTodoList] = useState(todoListUser)
 
   function getIcon(typeIcon, isCompleted){
     switch (typeIcon) {
@@ -26,40 +18,39 @@ export default function TodoList(){
         return <div className={`bg-yellow-100 flex justify-center self-center rounded-full w-12 h-10 ${isCompleted ? 'opacity-50' : ''}`}>
           <svg xmlns="http://www.w3.org/2000/svg" id="iconExercise" data-name="iconExercise" className='fill-yellow-800 self-center' viewBox="0 0 24 24" width="16" height="16"><path d="M15.067,16C21.656,15.973,24,12.488,24,9.5a3.5,3.5,0,0,0-2.76-3.418,19.219,19.219,0,0,0,.7-2.489,2.961,2.961,0,0,0-.613-2.476A3.022,3.022,0,0,0,18.977,0H5.023A3.022,3.022,0,0,0,2.672,1.117a2.961,2.961,0,0,0-.613,2.476,19.061,19.061,0,0,0,.7,2.489A3.5,3.5,0,0,0,0,9.5c0,2.988,2.344,6.473,8.933,6.5A4.507,4.507,0,0,1,9,16.637V20a1.883,1.883,0,0,1-2,2H5v2H19V22H17.008A1.885,1.885,0,0,1,15,20V16.637A4.507,4.507,0,0,1,15.067,16ZM20.5,8A1.5,1.5,0,0,1,22,9.5c0,2.048-1.631,4.225-6.124,4.475a3.642,3.642,0,0,1,.608-.626A14.949,14.949,0,0,0,20.443,8ZM2,9.5A1.5,1.5,0,0,1,3.5,8h.057a14.935,14.935,0,0,0,3.958,5.349,3.648,3.648,0,0,1,.609.626C3.631,13.725,2,11.548,2,9.5Zm11,7.137V20a4.08,4.08,0,0,0,.487,2H10.513A4.08,4.08,0,0,0,11,20V16.637a6.137,6.137,0,0,0-2.236-4.851C6.3,9.816,4.6,6.05,4.018,3.19a.956.956,0,0,1,.2-.809A1.029,1.029,0,0,1,5.023,2H18.977a1.029,1.029,0,0,1,.8.381.96.96,0,0,1,.2.809c-.586,2.86-2.282,6.626-4.747,8.6A6.139,6.139,0,0,0,13,16.637Z"/></svg>
         </div>
+      default:
+      return <></>
     }
   }
 
-  function addTodoList(nameTodo){
-    let tempTdo = todoListTemp
-
-    tempTdo.push(
-      {name:'prueba', date:'Yesterday', isCompleted:true, category: 'lesson'}
-    )
-    setTodoList(tempTdo)
-    console.log('que weas')
+  function addTodoList(nameTodo, actualList){
+    let tempTdo = actualList
+    tempTdo.push({name:'prueba', date:'Yesterday', isCompleted:true, category: 'lesson'})
+    return tempTdo
   }
 
-  function completeTodo(nombreTodo){
-    const updateTodo = todoList.map(t => {
-      if(t.name === nombreTodo){t.isCompleted = true}
+  //cambia estado a completo
+  function completeTodo(idTodo){
+    const updateTodo = todoListUser.map(t => {
+      if(t.id === idTodo){t.isCompleted ? t.isCompleted = false : t.isCompleted = true}
       return t
     })
-    setTodoList(updateTodo)
+    updateTodoList(updateTodo)
   }
 
   return(
     <>
-    <div className={`${todoList ? 'todoContainer' : 'todoContainerClean'} rounded-lg`}>
-      {todoList ?
+    <div className={`${todoListUser ? ' ' : ''} bg-white m-8 rounded-lg`}>
+      {todoListUser ?
         <ul className={''}>
-          {todoList.filter(t => !t.isCompleted).map(td =>
+          {todoListUser.filter(fl => fl.date === dateSelected).filter(t => !t.isCompleted).map(td =>
           <li key={td.id} className={'flex p-5 border-b last:border-b-0'}>
             {getIcon(td.category)}
             <div className={'flex w-full flex-col justify-center pl-3'}>
               <p className={'text-start font-semibold text-gray-800'}>{td.name}</p>
               <p className={'text-start font-semibold text-gray-500 text-sm'}>{td?.time}</p>
             </div>
-            <input id={td.name} type='checkbox' onChange={((e) => completeTodo(e.target.id))} className={'w-6 checkbox accent-violet-900'} />
+            <input type='checkbox' onChange={(() => completeTodo(td.id))} className={'w-6 checkbox accent-violet-900'} />
           </li>
           )}
         </ul>
@@ -67,19 +58,19 @@ export default function TodoList(){
         <a>No items</a>
       }
     </div>
-    {todoList ?
-      <div className={'flex flex-col'}>
+    {todoListUser ?
+      <div className={`flex flex-col mb-20`}>
         <a className={'pl-8 text-start font-semibold text-gray-800'}>Completed</a>
         <div className={'bg-white m-8 rounded-lg'}>
           <ul>
-          {todoList.filter(t => t.isCompleted).map(td =>
+          {todoListUser.filter(fl => fl.date === dateSelected).filter(t => t.isCompleted).map(td =>
             <li key={td.id} className={'flex p-5 border-b last:border-b-0'}>
               {getIcon(td.category, td.isCompleted)}
               <div className={'flex w-full flex-col justify-center pl-3 opacity-50 line-through'}>
                 <p className={'text-start font-semibold text-gray-800'}>{td.name}</p>
                 <p className={'text-start font-semibold text-gray-500 text-sm'}>{td?.time}</p>
               </div>
-              <input type='checkbox' className={'w-6 accent-violet-900'} defaultChecked/>
+              <input type='checkbox' onChange={(() => completeTodo(td.id))} className={'w-6 accent-violet-900'} defaultChecked/>
             </li>
           )}
           </ul>
@@ -88,11 +79,7 @@ export default function TodoList(){
       :
       <></>
     }
-    <div className={'absolute bottom-3 w-full p-6'}>
-      <div onClick={(() => addTodoList())} className={'rounded-3xl bg-violet-900 hover:bg-violet-800 hover:cursor-pointer'}>
-        <p className={'text-white font-bold text-sm p-3'}>Add New Task</p>
-      </div>
-    </div>
+
     </>
   )
 }
