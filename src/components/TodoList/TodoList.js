@@ -1,7 +1,7 @@
 import './TodoList.css'
-import {useState} from 'react'
+//import {useState} from 'react'
 
-export default function TodoList({todoListUser, updateTodoList, newTaskHandler, dateSelected, setRoute}){
+export default function TodoList({todoListUser, updateTodoList, dateSelected, setRoute}){
   //const [todoListUser, setTodoList] = useState(todoListUser)
 
   function getIcon(typeIcon, isCompleted){
@@ -23,11 +23,11 @@ export default function TodoList({todoListUser, updateTodoList, newTaskHandler, 
     }
   }
 
-  function addTodoList(nameTodo, actualList){
+  /*function addTodoList(nameTodo, actualList){
     let tempTdo = actualList
     tempTdo.push({name:'prueba', date:'Yesterday', isCompleted:true, category: 'lesson'})
     return tempTdo
-  }
+  }*/
 
   //cambia estado a completo
   function completeTodo(idTodo){
@@ -42,7 +42,7 @@ export default function TodoList({todoListUser, updateTodoList, newTaskHandler, 
     <>
     <div className={`${todoListUser ? ' ' : ''} bg-white m-8 rounded-lg`}>
       {todoListUser ?
-        <ul className={''}>
+        <ul className={'select-none'}>
           {todoListUser.filter(fl => fl.date === dateSelected).filter(t => !t.isCompleted).map(td =>
           <li key={td.id} className={'flex p-5 border-b last:border-b-0'}>
             {getIcon(td.category)}
@@ -55,12 +55,12 @@ export default function TodoList({todoListUser, updateTodoList, newTaskHandler, 
           )}
         </ul>
         :
-        <a>No items</a>
+        <p>No items</p>
       }
     </div>
     {todoListUser ?
       <div className={`flex flex-col mb-20`}>
-        <a className={'pl-8 text-start font-semibold text-gray-800'}>Completed</a>
+        <p className={'pl-8 text-start font-semibold text-gray-800'}>Completed</p>
         <div className={'bg-white m-8 rounded-lg'}>
           <ul>
           {todoListUser.filter(fl => fl.date === dateSelected).filter(t => t.isCompleted).map(td =>

@@ -2,8 +2,12 @@ import {useState} from 'react'
 import {generateDate} from '../../utils.js'
 
 export default function NewTask({todoList, newTaskHandler, dateSelected}){
+  const dateNow = new Date()
+  const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
   const [newDate, setNewDate] = useState(dateSelected ? dateSelected : '')
+  const [monthSelected, setMonthSelected] = useState(dateNow.getMonth())
   const [task, setTask] = useState({id:todoList.length+1, name:'', date:'', isCompleted:false, category: ''})
+  const [openDateModal, setOpenDateModal] = useState(false)
 
   function selectIcon(iconSelected){
     setTask({
@@ -47,8 +51,22 @@ export default function NewTask({todoList, newTaskHandler, dateSelected}){
     setNewDate(e.target.value)
   }
 
+  function getDaysInMonth(month, year){
+    return new Date(year, month, 0).getDate()
+  }
+
+  function customDate(e){
+    e.preventDefault()
+    setOpenDateModal(false)
+    //console.log(`${months[e.target.selectMonth.value - 1]} ${e.target.selectDay.value}, ${dateNow.getFullYear()}`)
+    setNewDate(`${months[e.target.selectMonth.value - 1]} ${e.target.selectDay.value}, ${dateNow.getFullYear()}`)
+  }
+
+  //Array(10).map(n => console.log(n))
+
   return(
-      <form onSubmit={getFormData} className=''>
+    <>
+      <form onSubmit={getFormData} className='select-none'>
         <div className={`flex flex-col p-6 text-gray-800 accent-violet-900 mb-20`}>
           {/*title*/}
           <label type='label' className={`self-start pb-3 font-semibold`}>Task Name</label>
@@ -67,7 +85,7 @@ export default function NewTask({todoList, newTaskHandler, dateSelected}){
 
             <div className={`flex flex-col w-[48%]`}>
               <label type='label' className={`self-start pb-3 font-semibold`}>Date</label>
-              <input type='text' name='taskDate' onChange={(e) => handleChange(e)} value={newDate} className={`border rounded p-3 font-regular`} placeholder='DD/MM/YYYY'/>
+              <input type='text'  name='taskDate' onClick={() => setOpenDateModal(true)} onChange={(e) => handleChange(e)} value={newDate} className={`border rounded p-3 font-regular`} placeholder='DD/MM/YYYY'/>
               <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setNewDate(generateDate)} className={`absolute mt-[54px] self-end mr-3 fill-violet-800`} viewBox="0 0 24 24" width="16" height="16"><g id="_01_align_center" data-name="01 align center"><path d="M21,2H18V0H16V2H8V0H6V2H3A3,3,0,0,0,0,5V24H24V5A3,3,0,0,0,21,2ZM2,5A1,1,0,0,1,3,4H21a1,1,0,0,1,1,1V8H2ZM2,22V10H22V22Z"/><rect x="15" y="13" width="2" height="2"/><rect x="11" y="13" width="2" height="2"/><rect x="7" y="13" width="2" height="2"/><rect x="15" y="17" width="2" height="2"/><rect x="11" y="17" width="2" height="2"/><rect x="7" y="17" width="2" height="2"/></g></svg>
             </div>
 
@@ -92,5 +110,28 @@ export default function NewTask({todoList, newTaskHandler, dateSelected}){
           </button>
         </div>
       </form>
+      <div className={`${openDateModal ? '' : 'hidden'} flex overflow-hidden touch-none h-full justify-center items-center absolute top-0 bottom-0 bg-[#00000060] right-0 left-0 opacity-0.2`}>
+        <form onSubmit={customDate} className={`bg-white py-6 rounded m-6 space-x-2`} >
+
+          <select name='selectMonth' className={`border rounded p-3 font-regular w-2/6`} defaultValue={monthSelected} onChange={(e) => setMonthSelected(e.target.value)} placeholder='Month'>
+            {months.map((m, i) =>
+              <option key={m} value={i+1}>{m}</option>
+            )}
+          </select>
+          <select name='selectDay' className={`border rounded p-3 font-regular w-1/6`} defaultValue={dateNow.getDate()} placeholder='Day'>
+            {Array.apply(null, {length:getDaysInMonth(monthSelected, dateNow.getFullYear())}).map((n, i) =>
+              <option key={i+1}>{i+1}</option>
+             )
+            }
+          </select>
+          {/*<input type='text' disabled={true} onClick={() => console.log(getDaysInMonth(11, 2022))} className={`border rounded p-3 font-regular w-1/6`} placeholder='Day'/>*/}
+          <input type='text' disabled defaultValue={dateNow.getFullYear()} className={`border rounded p-3 font-regular w-1/6 select-none`} placeholder='Year'/>
+
+          <input type='submit' className={'hover:bg-red-700 absolute mt-16 bg-red-500 rounded text-white px-3 py-1 font-bold'} value='Save' />
+
+        </form>
+
+      </div>
+    </>
   )
 }
