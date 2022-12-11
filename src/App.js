@@ -1,4 +1,4 @@
-import './App.css';
+//import './App.css';
 import {useState, useEffect} from 'react'
 import TodoList from './components/TodoList'
 import MiHeader from './components/MiHeader'
@@ -6,29 +6,9 @@ import NewTask from './components/NewTask'
 import TodoListByDate from './components/TodoListByDate'
 
 function App() {
-  const [route, setRoute] = useState('home') //home, todoList, newTask
+  const [route, setRoute] = useState('home') //home || todoList || newTask
   const [dateSelected, setDateSelected] = useState('')
-  //const [newTaks, setNewTask] = useState(false)
   const [allTodoList, setAllTodoList] = useState([])
-  //const [todoListByDate, setTodoListByDate] = useState([])
-  /*const todoListTemp = [
-    {id:1, name:'Study lesson', date:'Today', isCompleted:false, category: 'lesson'},
-    {id:2, name:'Run 5k', date:'Tomorrow', time:'4:00pm', isCompleted:false, category: 'calendar'},
-    {id:3, name:'Go to party', date:'Someday', time:'10:00pm', isCompleted:false, category: 'exercise'},
-    {id:4, name:'Game meetup', date:'Yesterday', time:'1:00pm', isCompleted:true, category: 'calendar'},
-    {id:5, name:'Take out trash', date:'Yesterday', isCompleted:true, category: 'lesson'}
-  ]*/
-
-  useEffect(() => {
-    //setAllTodoList(todoListTemp)
-  }, [])
-
-  function generateDate(){
-    const newDate = new Date()
-    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-
-    return `${months[newDate.getMonth()]} ${newDate.getDate()}, ${newDate.getFullYear()}`
-  }
 
   function insertTask(task){
     const newTodoList = allTodoList
@@ -36,9 +16,9 @@ function App() {
     setAllTodoList(newTodoList)
     setRoute('todoList')
     setDateSelected(task.date)
+    localStorage.setItem('todoList', JSON.stringify(allTodoList))
   }
 
-  //selecciona grupo de todoList
   function selectDate(date){
     setDateSelected(date)
     setRoute('todoList')
@@ -51,11 +31,14 @@ function App() {
     setRoute('newTask')
   }
 
+  useEffect(() => {
+    const dataUser = localStorage.getItem('todoList') ? JSON.parse(localStorage.getItem('todoList')) : []
+    setAllTodoList(dataUser)
+  },[])
+
   return (
-    <div className="App">
-      <MiHeader fecha={generateDate()} dateSelected={dateSelected} route={route} setRoute={setRoute}/>
-
-
+    <div className="text-center">
+      <MiHeader dateSelected={dateSelected} route={route} setRoute={setRoute}/>
 
       {route === 'todoList' ?
         <TodoList todoListUser={allTodoList} updateTodoList={setAllTodoList} dateSelected={dateSelected} setRoute={setRoute} />

@@ -1,21 +1,21 @@
 export default function TodoListByDate({allTodoList, route, selectDate}){
-  function todoListByDate(){
-    const a = []
+  function todoListByDate(arrTL){
+    const filteredArr = []
 
-    allTodoList.forEach((item, i) => {
-      if(a.filter(nl => nl === item.date).length === 0){
-        a.push(item.date)
+    arrTL.forEach((item, i) => {
+      if(filteredArr.filter(nl => nl === item.date).length === 0){
+        filteredArr.push(item.date)
       }
     });
 
-    return a
+    return filteredArr
   }
 
   return(
     <div className={`bg-white m-8 rounded-lg ${route === 'home' ? '': 'hidden'}`}>
         <ul>
           {allTodoList.length > 0 ?
-            todoListByDate().map(td =>
+            todoListByDate(allTodoList).map(td =>
             <li key={td} onClick={() => selectDate(td)} className={'flex p-5 border-b last:border-b-0 cursor-pointer'}>
               <div className={'flex w-full flex-col justify-center pl-3'}>
                 <p className={'text-start font-semibold text-gray-800'}>{td}</p>
