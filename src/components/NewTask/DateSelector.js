@@ -18,7 +18,7 @@ export default function DateSelector({mihook, setOpenDateModal}){
           <input type='text' disabled defaultValue={mihook.year} className={`border rounded p-3 font-regular w-1/6 select-none`} placeholder='Year' />
         </div>
 
-        <input type='button' onClick={() => setOpenDateModal(false)} className={'hover:bg-red-700 bg-red-500 rounded text-white px-3 py-1 font-bold'} value='Save' />
+        <input type='button' onClick={() => setOpenDateModal(false)} className={'hover:bg-red-700 bg-red-500 rounded text-white px-3 py-1 font-bold'} value='Close' />
       </div>
 
     </div>
