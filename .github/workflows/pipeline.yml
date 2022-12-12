@@ -8,7 +8,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  deploy:
+  Deploy:
     runs-on: ubuntu-20.04
     steps:
       - name: Cancelar builds previas
@@ -33,6 +33,3 @@ jobs:
           command: npm run cy:run
           start: npm run start
           wait-on: http://localhost:3000
-        if: ${{ github.event_name == 'push' }}
-      - name: Deploy Github pages
-        run: npm run deploy
