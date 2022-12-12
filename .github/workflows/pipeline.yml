@@ -33,6 +33,6 @@ jobs:
           command: npm run cy:run
           start: npm run start
           wait-on: http://localhost:3000
-        if: ${{ github.event_name === 'push' }}
+        if: ${{ github.event_name == 'push' }}
       - name: Deploy Github pages
         run: npm run deploy
