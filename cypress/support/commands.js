@@ -1,0 +1,13 @@
+Cypress.Commands.add('newTask', ({taskTitle}) => {
+  cy.contains('TODO List')
+  cy.get('button')
+    .should('contain', 'Add New Task')
+    .click()
+  cy.contains('Add New Task')
+  cy.get('[placeholder="Task Title"]').type(taskTitle)
+  cy.get('#iconLesson').click()
+  cy.get('[placeholder="12:00"]').type('10:00')
+  cy.get('button')
+    .should('contain', 'Save')
+    .click()
+})
